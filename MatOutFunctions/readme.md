@@ -1,0 +1,2 @@
+# Usage of debug functions
+The latest verson uses the SQLite logging debug output data. The third party software could be used to read the data (e.g. [DB Browser for SQLite](https://sqlitebrowser.org/))

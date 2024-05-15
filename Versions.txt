@@ -1,0 +1,326 @@
+== VERSION 6.1
+
+Version 6.1.2
+Continuation of the refactoring and code simplifications.
+LTE correction of BRbandwidth, the BRbadwidth is calculated considering the overall subchannels needed for the transmission.
+
+Version 6.1.1
+Refactoring to uniform LTE-V2X and 5G-V2X. Many variables that were defined as ___LTE are now renamed as ___CV2X.
+
+-REFACTORING:
+List of important parameters that changed name:
+	- sensingMatrixLTE 		-> sensingMatrixCV2X
+	- powerThresholdMode4		-> powerThresholdAutonomous
+	- lteNumberOfReplicasMax	-> cv2xNumberOfReplicasMax
+	- duplexLTE			-> duplexCV2X
+	- P_ERP_MHz_LTE			-> P_ERP_MHz_CV2X
+	- ...
+
+When referring to variable that had "suframe" in the name, the variable has been changed to "TTI"
+	- subframeLTEstarts -> ttiCV2Xstarts
+
+Folders renamed:
+ - MainFilesLTE				-> MainFilesCV2X
+ - MatFilesResourceAllocationLTE	-> MatFilesResourceAllocationCV2X
+
+
+- Outputs in the MainOut has been renamed:
+	- averageTbeacon has been renamed in allocationPeriod
+	- RBPairsBeacon -> PRBlocks so the ambivalence between physicalRB and pairsRB is maintained
+	- Bsize -> packet size
+  - Added "5G" in the print of the output files for 5G
+
+
+-ADDITIONS to version 6.1:
+Version 6.1 now supports the generation of aperiodic packets accordin to 3GPP rules.
+Two parameters are used, one defines the fixed generation period and a second one takes into account the variable random generation interval.
+
+
+
+== VERSION 5.6
+
+Version 5.6
+Introduced support for the 5G physical and MAC layer strucutre.
+The possibility to simulate 5G is introduced, three numerologies are possible [15,30,60kHz].
+The 5G TBS is calculated according to the specific procedure.
+For 4G and 5G the time is divided in terms of TTI.
+Introduced the support for NLOSv, simulated with option 'channelModel' = 4 
+Retransmission window in 5G, expanded to 32 slots. Added possibility to have 2 retransmissions.
+
+Version 5.6.1
+Introduced support for NOMA, creation of Folder "MatFilesNoma"
+FIXED: BRalgorithm 101:
+- mainInit.m: Line 437 Initialization of BRid for random allocation
+- BRressignmentRandom.m: Line 37, added algorithm 101 to the condition to have random allocation inside T1-T2 window 
+- initiate BRAssignemntAlgorithm:
+	- Line 80, Line 81: added initialization of parameters T1 and T2 for Random allocation
+- LTEV2Vsim.m
+	- Line 335, added test for printCBR only when non random allocation
+-ADDED: Ksic in initiatePhyParameters.m (line 393)
+-ADDED: reitroduced allNeighborsID in computeNeighbors
+-ADDED: Added alg. 101 as condition to use retransmissions. (line 202 initiateBRAlgorithm.m)
+-FIXED: Random allocation with retransmission, fixed in mainLTEsubframeEnds, the function needed to re-arrange only the BRIds of the transmitting UE
+-ADDED: During FD transmissions is introduced the possibility to sense the channel while transmitting, if a level of power above a certain threshold
+	is sensed the transmitter re-select new resources to avoid collisions (line 149 BRreassignment3GPPmode4.m)
+-FIXED: Solved a small bug that prevented to give values [-1] from the config file
+
+Version 5.6.2
+Introduced NOMA with residual interference: 
+	Ksic=0 -> ideal SIC
+	Ksic>0 -> residual interference
+-FIXED issues with multiple SIC stages
+
+Version 5.6.3
+-FIXED issues with BRreassignmentRandom.m
+-ADDED && simParams.cbrActive == true
+- LTEV2Vsim.m
+	- Line 335, fixed test for printCBR only when CBRactive is true
+== VERSION 5.4
+
+Version 5.4
+Collects the changes.
+
+Version 5.4.1
+The Wireless Blind Spot metric is updated.
+
+Version 5.4.2
+New parameter 'coexA_withLegacyITSG5' added.
+
+Version 5.4.3
+New vector 'simParams.coex_knownEndOfLTE', which is the vision of slots by nodes.
+New parameter 'coexA_endOfLteKnownBy11p' added.
+
+Version 5.4.4
+New vector 'phyParams.mcoPowerDeltaChannels' to allow different power in different channels.
+
+Version 5.4.5
+The MCO interference is generalized to power levels outside 23 and 33dBm.
+
+Version 5.4.6
+In coexistence, a minimum of 5 ms per slot is set.
+This is done in 'mainInitCoexistence' for static and in cbrLte for dynamic.
+Default version of 'coex_cbrLteVariant' now set to 3.
+
+Version 5.4.7
+Method F updated with the NAV always sent at the beginning of the LTE slot.
+
+Verison 5.4.8
+Function coexistenceStartNewBackoff11pModified modified to cope with superframe of 
+length not necessarily equal to 10.
+
+Version 5.4.9
+Added config parameter coexC_ccaVariant (boolean, false as default) to allow setting 
+the CCA threshold to -65 dBm as for normally not detected signals
+
+Version 5.4.10
+Added config parameter coexF_guardTime (boolean, false as default) to allow 
+adding the time gap before teh superframe
+
+Version 5.4.11
+Method F: now the CTS-To_Self reception is checked using the curve
+Method C: revised based on method F
+
+Version 5.4.12
+Corrects bugs in methods C and F. The virtual interference was not included correctly.
+
+Version 5.4.13
+Added lteCbrFactor. The default is 1.
+
+Version 5.4.14. 
+In updateKPILTE, da errorMatrix a correctTxList.
+Added stationManagement.pckReceived and stationManagement.pckRemainingTx.
+Retransmissions in LTE completed, including CC. Not including resource allocation.
+BUGFIX: corrected CBR threshold calculation, was per RB, now per MHz.
+
+Version 5.4.15
+Debugged the retransmissions.
+New inputs for settings of the replicas.
+
+Version 5.4.16
+Added bi-dimensional BRid.
+BUGFIX: in initLastPowerLTE, a node with an allocated resource was not sensing even if not transmitting.
+
+Version 5.4.17
+HARQ management modified. Now: 1) all replicas must be within T1,T2; 2) only the first transmission
+is considered for cbrLTE calculation; 3) bugfix: the 'gainSinr' in 'elaborateFateRxLTE.m' considers
+that sometimes previous replicas were not received due to HD
+
+Version 5.4.18
+Number of slots in dynamic corrected. Was with a granularity larger than 1.
+
+Version 5.4.19
+BUGFIX: MCO numbers corrected
+
+Version 5.4.20
+BUGFIX: Interference of SCI corrected.
+Retransmissions revised, using Maximal Ratio Combining. Option 'replicaGain' removed.
+BUGFIX: since the introduction of the HARQ there was a bug in the case the allocation period was different from the generation period, which caused no reallocations during the simulation.
+
+
+== VERSIONS 5.2>>5.3
+
+Version 5.2.1_2
+Now two IBEmatrixes are calculated, one for the Data and the other for the SCI
+
+Version 5.2.1
+Added 'FixedPdensity', which is a boolean set to false by default.
+Simplified the file name of PER_LTE tables.
+Gap between "beacon resources" removed in the IBE calculation.
+Added 'BRoverlapAllowed', allowing beacon resources that overlap partially. The option is active only with Mode 4 (alg. 18) and is set to false by default.
+
+Version 5.2.2
+Packet queue added in LTE (it was implicit until version 5.2.1).
+Refactoring (stationManagement.nPackets -> stationManagement.pckBuffer).
+Variables AIFS and CW from scalar in phySim to vector in stationManagement.
+Added stationManagement.pckType.
+New dimension of most outputs in order to manage different packet types.
+Added 'RSUcfg', allowing to include fixed nodes to the simulation: they transmit messages with the same characteristics (size, periodicity) of the mobile nodes; in case of 11p, DENM or hpDENM can be set, which have a different configuration of AIFS and CWmin (automatically set as in the specifications).
+
+Version 5.2.3
+Blocking bug corrected in Method C when multiple beacon resources are available per subframe (at start and end of 11p tx).
+setting 'coex_superFlength' now also for Method C; now initialized to 0.01
+variables 'simParams.coex_maxSF' (scalar) and 'sinrManagement.coexC_NtsLTE' (vector) both modified to 'sinrManagement.coex_NtsLTE' (vector)
+variable 'sinrManagement.coex_NtsLTE' is now used for energy signals in method B during void subframes
+The NAV is now transmitted by each LTE node independently (thus possibly interfering). variable 'sinrManagement.coex_NtsLTE' is used also for method F
+Added the config 'coex_slotManagement', to be set to the string 'static' or 'dynamic' -> then modified into 1 or 2
+setting 'coexC_cbrLteVariant' converted to 'coex_cbrLteVariant'
+setting 'coexC_cbrTotVariant' converted to 'coex_cbrTotVariant'
+setting 'coexC_powerStopSensing11p' converted to 'coex_powerStopSensing11p'
+setting 'coexC_printTechPercentage' converted to 'coex_printTechPercentage'
+Setting of the LTE slot modified. Now static or dynamic for methods B, C, F; the dynamic management is no more part of Method C
+Default of setting 'coexB_allToTransmitInEmptySF' changed to 'true'
+Minor BUG solved caused by comparison of double values - caused in few cases 2 packets in an LTE queue (not possible due to current assumptions)
+Now, setting 'variabilityTbeacon' to -1, the 11p Tbeacon is set automatically, based on vehicle speed, as per ETSI and Car2Car
+
+Version 5.2.4
+Now, setting 'variabilityTbeacon' to -1, both the 11p and LTE Tbeacon are set automatically, based on vehicle speed, as per ETSI and Car2Car - in LTE, the allocation periodicity is fixed to the value in averageTbeacon
+In coexistence, static, now the number of subframes in the LTE part is ceil of LTE/superframe (was floor).
+
+Version 5.2.5
+The DENM and hpDENM from RSUs are sent at 20 Hz.
+
+Version 5.2.6
+Now methods can be used also with 100% vehicles of one technology.
+
+Version 5.2.7
+BUG solved: use of T1 and T2 in Mode 4 corrected.
+BUG solved: with LTE only, the sensing matrix was not correctly reset in the absence of transmitters - this was causing a worsening of the performance (this bug was generated between v.5.1.4 and v5.1.8).
+Tentative part with interference over short intervals in 11p.
+
+Version 5.2.8
+Copyright changed to GNU. Copyright notices inside the functions removed.
+Reorganization: removed 'coexistenceInterferenceOfEnergySignalsBefore.m' and 'computeShadowing.m'; 'updateDistance.m' refactored to 'updateDistanceChangeForShadowing.m'
+Mode 4 separated into two files: sensing and allocation.
+A new feature is added: in LTE, if a resource is not available within the next T1-T2, now a reselection is commanded; with this modification, the delay is upper bounded by T2 as expected.
+
+Version 5.2.8_1
+Tentative part on MCO with fixed interferers (beta).
+
+Version 5.2.8_2
+New parameters 'CCAthr11p_notsync' (replaces 'CCAthreshold11p', default -65 dBm) and 'CCAthr11p_sync' (deafult -85 dBm).
+Calculation and print of 11p CBR fully revised. Default of the CBR interval reduced to 0.1s. Now 'CCAthr11p_sync' is used to consider the channel as busy. The CBR calculation in coexistence Mitigation Method A do not account for the LTE periods.
+Part on MCO included, with fixed nodes in the adjacent channel. Various parameters for the configuration; 'mco_nVehInterf', 'mco_resPowerFromAdjacent', 'mco_interfERP', 'mco_printInterfStatistic'.
+
+Version 5.2.9
+Collects the changes. Used for the MCO results in the STF meeting of May 26, 2020.
+
+Version 5.2.9_1
+'positionTimeResolution' cannot be set to -1 anymore and is applied to all scenarios (was only active with traffic traces). The default is 0.1 s
+CBR calculation corrected in the case of TDM and CBR interval below the slot durations
+Print to video is now every "positionUpdated" (was every "Tbeacon")
+
+Version 5.2.9_2
+Refactoring: 'beaconPeriod' changed to 'generationInterval'.
+CBR is now called in the main. Measurements are desynch'ed through a new parameter "cbrSensingIntervalDesynchN" (default 100).
+Corrected the CBR calculation in LTE on a subchannel basis.
+Added the option "cbr_active". 
+Added DCC for both ITS-G5 and LTE-V2X.
+Added the option "dcc_active" ("cbr_active" must be set at true).
+First generation time now randomized within the generation interval (was in Beacon and created problems in particular cases, never used for official simulations).
+Added the parameter 'mco_interfNeglectedToMainChannel' which allows to neglect the interference from the nodes in the additional channel to those in the main channel (if true, only the opposite is considered during the simulations).
+
+Version 5.2.9_3
+Mitigation method B: CCA threshold automatically set to -85 dBm.
+Mitigation method C: CCA threshold automatically set to -85 dBm.
+Parameter 'coex_powerStopSensing11p' removed.
+Parameter 'coex_cbrLteVariant' removed.
+Coexistence Method F updated; now not all the LTE nodes send thee NAV.
+Coexistence Method B updated; now LTE nodes sense before transmitting the energy signal just before superframe beginning.
+
+Version 5.2.10
+Collects the changes. Used for Car2Car results in June 2020.
+
+Version 5.2.10_2
+Temporary version with the new SINR calculation, later reported in Version 5.3.0
+
+Version 5.2.11
+Added the Manhattan Scenario, ETSI-Urban, Scenario Type 4 / default 1 block
+This required the following changes:
+-added ConfigFiles/Urban3GPP
+-updated updatePosition files and added to the positionManagement the direction
+-updated initVehiclePosition
+-updated initiateMainSimulationParameters
+-updated outputToFiles
+The corresponding Channel Gain calculation was updated based on Winner+ model:
+-added the LOS Path Loss calculation for Winner+ in MatFilesSINR/computeChannelGain
+
+Version 5.3.0
+Changed the way the SINR over a packet is calculated - major change, needs a new version
+Minor: corrected init of sinrManagement.cbrLTE (caused error at start in some cases)
+Added an additional output with the CBR of LTEonly (active when Technology==4)
+
+Version 5.3.1
+MCO implementation.
+
+Version 5.3.1_2
+IBEcalculation revised to separate control and data
+A number of variants implemented for the CBR_LTE to be used in dynamic methods
+
+Version 5.3.1_3
+In method C, 11p detection from LTE nodes
+Default di coexC_timegapVariant posto a 1 (no gap)
+
+Version 5.3.2
+Now when a new ITS-G5 transmission starts also those nodes that were already receiving are checked, and 
+the node from which receiving is possibly updated. The time margin for the "update" is set to 4us.
+The RIL vs. time model is updated with the model derived through Matlab fitting.
+
+Version 5.3.2_2
+Method A with 'coexA_improvements' updated as from Qualcomm.
+
+Version 5.3.3
+The PER Curves for the Urban scenario have been added. They include the NLOS case.
+The only parameters affected by the PER curves that have not been changed are LambdaLTE (BR alg 9) and R reuse. This will be discussed and possibly updated in a second moment.
+Then, the sinr thresholds for both the technologies have been defined for both the LOS and NLOS case in  any scenario. 
+The Urban configuration takes the number of vehicles as input.
+
+Version 5.3.3_2
+Superframe management from ITS-G5 point of view is now on a per station basis. Desynch can be simulated.
+This required adding a check of the idFromWhichReceiving at the start of a new transmission.
+
+Version 5.3.3_3
+Added proposed variants to the additional delay in Method A.
+
+Version 5.3.4
+Collects previous changes.
+Column added in the mainOut: average number (per vehicle per second) of transmitted packets.
+Tested and debugged with Traffic traces. Single tech and Methods.
+Calculation of the speed with traffic traces added and used to derive the beacon periodicity. 
+Output of neighbors updated. 
+Output of speed added.
+
+Version 5.3.5
+Added the channel models from Friedbert.
+This required a revision: changed the input "winnerModel" to "channelModel"; added a three slope option.
+
+Version 5.3.5_2
+Modified in mainV2X the management of the position update to cope with cases with the position update is postponed to the end of an LTE subframe. In such case, the time instant was going back, whereas now it remains the same.
+This solves a blocking bug in rare cases but introduces in rare cases a position update that might not comply exactly with the timing; the approximation appears reasonably negligible.
+In mainV2X, when calling cbrUpdateLTE, a small bug is resolved with simParams.technology~=4.
+
+Version 5.3.6
+We included the possibility to discrete the generationPeriodFromSpeed in mainInit through two control parameters in appParams:
+Correccted the Qualcomm's enhanced Method A in the case of unbalanced technology penetration.
+
+Version 5.3.7
+Multi-channel outputs.
