@@ -8,6 +8,9 @@ The tool remains agnostic of the signal waveform (e.g., FMCW rather than OFDM) a
 The output includes information concerning the path of potentially interfering signals and the position and speed of the vehicles mounting the source and victim radards.
 The output can then be used for the study of interference in realistic scenarios with multiple vehicles and the design and evaluation of methods for interference mitigation.
 
+For the scenario and the movements of the cars, the simulator benefits from the simulator "Simulation of Urban MObility" (SUMO), available at https://sumo.dlr.de.
+Future releases of the simulator will also allow deriving the movements from external traffic traces.
+
 ## Notes
 The code runs correctly on Windows 10/11 with Matlab version 2023b and SUMO version 1.19.0. Other versions have not been tested.
 
