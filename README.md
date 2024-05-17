@@ -9,8 +9,7 @@ The output includes information concerning the path of potentially interfering s
 The output can then be used for the study of interference in realistic scenarios with multiple vehicles and the design and evaluation of methods for interference mitigation.
 
 ## Notes
-- Matlab version ...
-- SUMO version ...
+The code runs correctly on Windows 10/11 with Matlab version 2023b and SUMO version 1.19.0. Other versions have not been tested.
 
 ## References
 The main reference for the simulator is:
