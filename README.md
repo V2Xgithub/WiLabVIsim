@@ -1,8 +1,10 @@
 # WiLabVIsim
 
-**_WiLabVIsim_** is a Matlab-based open-source simulator, specifically designed for analyzing radar-to-radar interference in a realistic vehicular scenario. 
-The tool calculates the number of potential interferers that each sensor perceives over time based on the actual positions in the scenario. 
+**_WiLabVIsim_** is a Matlab-based open-source simulator, specifically designed for analyzing radar-to-radar interference in realistic vehicular scenarios, where hundres of moving vehicles are equipped with one or more radars. 
+
+The tool calculates during the simulation the number of potential interferers that each sensor perceives based on its actual positions and the position of the sorrounding vehicles. 
 The tool remains agnostic of the signal waveform (e.g., FMCW rather than OFDM) and other radar parameters.
+
 The output includes information concerning the path of potentially interfering signals and the position and speed of the vehicles mounting the source and victim radards.
 The output can then be used for the study of interference in realistic scenarios with multiple vehicles and the design and evaluation of methods for interference mitigation.
 
